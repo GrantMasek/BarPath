@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>BarPath</title>
+        <title>Edit Workout - BarPath</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     </head>
 
@@ -12,36 +12,33 @@
 
         <nav>
             <a href="{{ url_for('home') }}">Home</a>
-            <a href="{{ url_for('add_workout') }}" aria-current="page">Add Workout</a>
+            <a href="{{ url_for('add_workout') }}">Add Workout</a>
             <a href="{{ url_for('history') }}">History</a>
         </nav>
 
         <div class="container">
-            <h2>Add Workout</h2>
+            <h2>Edit Workout</h2>
 
-            <form method="POST" action="/add">
+            <form method="POST" action="{{ url_for('edit_workout', workout_id=workout_id) }}">
                 <label>Workout Name:</label>
-                <input type="text" name="workout_name" required>
+                <input type="text" name="workout_name" value="{{ workout_name }}" required>
 
                 <label>Date:</label>
-                <input type="date" name="date" required>
-
-                <input type="hidden" name="exercise_count" id="exercise_count" value="0">
+                <input type="date" name="date" value="{{ date }}" required>
 
                 <div id="exercises_container"></div>
 
                 <br>
                 <button type="button" onclick="addExercise()">Add Exercise</button>
-                <button type="submit">Save Workout</button>
+                <button type="submit">Save Changes</button>
             </form>
         </div>
 
         <script>
             let exerciseCount = 0;
 
-            function addExercise() {
+            function addExercise(exerciseName = "", sets = []) {
                 exerciseCount++;
-                document.getElementById("exercise_count").value = exerciseCount;
 
                 const exercisesContainer = document.getElementById("exercises_container");
 
@@ -53,9 +50,9 @@
                     <h3 class="exercise-title">Exercise ${document.querySelectorAll('.exercise-card').length + 1}</h3>
 
                     <label>Exercise Name:</label>
-                    <input type="text" name="exercise_name_${exerciseCount}" required>
+                    <input type="text" name="exercise_name_${exerciseCount}" value="${exerciseName}" required>
 
-                    <input type="hidden" name="set_count_${exerciseCount}" id="set_count_${exerciseCount}" value="0">
+                    <input type="hidden" id="set_count_${exerciseCount}" value="0">
 
                     <div id="sets_container_${exerciseCount}"></div>
 
@@ -66,11 +63,18 @@
 
                 exercisesContainer.appendChild(exerciseDiv);
 
-                addSet(exerciseCount);
+                if (sets.length > 0) {
+                    sets.forEach(set => {
+                        addSet(exerciseCount, set[0], set[1]);
+                    });
+                } else {
+                    addSet(exerciseCount);
+                }
+
                 renumberExercises();
             }
 
-            function addSet(exerciseNumber) {
+            function addSet(exerciseNumber, weight = "", reps = "") {
                 const setCountInput = document.getElementById(`set_count_${exerciseNumber}`);
                 let setCount = parseInt(setCountInput.value) + 1;
                 setCountInput.value = setCount;
@@ -85,10 +89,10 @@
                     <h4 class="set-title">Set ${setsContainer.querySelectorAll('.set-row').length + 1}</h4>
 
                     <label>Weight:</label>
-                    <input type="number" name="weight_${exerciseNumber}_${setCount}" required>
+                    <input type="number" name="weight_${exerciseNumber}_${setCount}" value="${weight}" required>
 
                     <label>Reps:</label>
-                    <input type="number" name="reps_${exerciseNumber}_${setCount}" required>
+                    <input type="number" name="reps_${exerciseNumber}_${setCount}" value="${reps}" required>
 
                     <button type="button" onclick="removeSet(${exerciseNumber}, ${setCount})">Remove Set</button>
                     <hr>
@@ -138,6 +142,14 @@
                     }
                 });
             }
+
+            window.onload = function () {
+                const existingExercises = {{ exercises|tojson }};
+
+                existingExercises.forEach(exercise => {
+                    addExercise(exercise.exercise_name, exercise.sets);
+                });
+            };
         </script>
     </body>
 </html>

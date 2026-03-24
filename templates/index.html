@@ -3,18 +3,113 @@
     <head>
         <title>BarPath</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </head>
+
     <body>
         <header>
             <h1>BarPath</h1>
-            <h2>FBGMasdf</h2>
         </header>
+
         <nav>
             <a href="{{ url_for('home') }}" aria-current="page">Home</a>
             <a href="{{ url_for('add_workout') }}">Add Workout</a>
             <a href="{{ url_for('history') }}">History</a>
         </nav>
 
+        <div class="container">
+            <h2>Dashboard</h2>
+
+            <div class="dashboard-grid">
+                <div class="pr-card">
+                    <h3>Bench PR</h3>
+                    <p class="pr-value">
+                        {% if bench_pr %}
+                            {{ bench_pr }} lbs
+                        {% else %}
+                            No data
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="pr-card">
+                    <h3>Squat PR</h3>
+                    <p class="pr-value">
+                        {% if squat_pr %}
+                            {{ squat_pr }} lbs
+                        {% else %}
+                            No data
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="pr-card">
+                    <h3>Deadlift PR</h3>
+                    <p class="pr-value">
+                        {% if deadlift_pr %}
+                            {{ deadlift_pr }} lbs
+                        {% else %}
+                            No data
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3>Bench Progress</h3>
+                <canvas id="benchChart"></canvas>
+            </div>
+        </div>
+
+        <script>
+            const chartLabels = {{ dates | tojson }};
+            const chartData = {{ weights | tojson }};
+
+            const ctx = document.getElementById("benchChart").getContext("2d");
+
+            new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: "Bench Progress",
+                        data: chartData,
+                        borderColor: "#e63946",
+                        backgroundColor: "rgba(230, 57, 70, 0.2)",
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: "#ffffff"
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: "#ffffff"
+                            },
+                            grid: {
+                                color: "#444"
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: "#ffffff"
+                            },
+                            grid: {
+                                color: "#444"
+                            },
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+        </script>
     </body>
 </html>

@@ -21,12 +21,24 @@
 
             {% for workout in workouts %}
                 <div class="card">
-                    <p>
-                        {{ workout[1] }} - {{ workout[2] }} lbs x {{ workout[3] }} ({{ workout[4] }} sets)
-                    </p>
+                    <h3>{{ workout.name }}</h3>
+                    <p><strong>Date:</strong> {{ workout.date }}</p>
+
+                    <a href="{{ url_for('edit_workout', workout_id=workout.id) }}" class="edit-button">
+                        Edit Workout
+                    </a>
+
+                    {% for exercise in workout.exercises %}
+                        <div class="exercise-block">
+                            <h4>{{ exercise.exercise_name }}</h4>
+
+                            {% for set in exercise.sets %}
+                                <p>Set {{ loop.index }}: {{ set[0] }} lbs x {{ set[1] }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
                 </div>
             {% endfor %}
-
         </div>
 
     </body>
