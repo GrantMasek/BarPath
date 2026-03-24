@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>BarPath</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    </head>
+    <body>
+        <header>
+            <h1>BarPath</h1>
+            <h2>FBGMasdf</h2>
+        </header>
+        <nav>
+            <a href="{{ url_for('home') }}" aria-current="page">Home</a>
+            <a href="{{ url_for('add_workout') }}">Add Workout</a>
+            <a href="{{ url_for('history') }}">History</a>
+        </nav>
+
+    </body>
+</html>
