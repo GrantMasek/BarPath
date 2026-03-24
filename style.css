@@ -1,0 +1,62 @@
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background-color: whitesmoke;
+  color: #222;
+}
+
+/* header */
+header {
+  padding: 1rem;
+  text-align: center;
+  box-sizing: border-box;
+}
+h1 {
+  margin: 0;
+  color: #333;
+  font-size: 1.25rem;
+}
+
+/* nav: horizontal, centered, with gaps */
+nav {
+  display: flex;
+  justify-content: center; /* center the group */
+  gap: 0.75rem;            /* space between links */
+  padding: 0.5rem 1rem;    /* outer spacing */
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  box-sizing: border-box;
+  flex-wrap: wrap;         /* wrap on small screens */
+}
+
+/* link appearance */
+nav a {
+  text-decoration: none;
+  color: #0366d6;
+  padding: 0.45rem 0.75rem;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color .12s ease, color .12s ease, transform .06s;
+}
+
+/* hover / focus */
+nav a:hover,
+nav a:focus {
+  background: rgba(3,102,214,0.08);
+  color: #044fba;
+  transform: translateY(-1px);
+  outline: none;
+}
+
+/* active/current page */
+nav a[aria-current="page"],
+nav a.active {
+  background: #0366d6;
+  color: #fff;
+}
+
+/* keyboard accessibility */
+nav a:focus-visible {
+  box-shadow: 0 0 0 3px rgba(3,102,214,0.12);
+  outline: none;
+}
