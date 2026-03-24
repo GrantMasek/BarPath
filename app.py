@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+import sqlite3
 
 app = Flask(__name__)
 
@@ -14,17 +15,34 @@ def add_workout():
         reps = request.form.get("reps")
         sets = request.form.get("sets")
 
-        print("Workout Submitted:")
-        print("Lift:", lift)
-        print("Weight:", weight)
-        print("Reps:", reps)
-        print("Sets:", sets)
+        # connect to database
+        conn = sqlite3.connect("database.db")
+        cursor = conn.cursor()
+
+        # insert workout
+        cursor.execute(
+            "INSERT INTO workouts (lift, weight, reps, sets) VALUES (?, ?, ?, ?)",
+            (lift, weight, reps, sets)
+        )
+
+        conn.commit()
+        conn.close()
+
+        print("Workout saved to database")
 
     return render_template("addWorkout.html")
 
 @app.route("/history")
 def history():
-    return render_template("history.html")
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM workouts")
+    workouts = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("history.html", workouts=workouts)
 
 if __name__ == "__main__":
     app.run(debug=True)
